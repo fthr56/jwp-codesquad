@@ -10,28 +10,35 @@ import org.springframework.web.servlet.ModelAndView;
 
 import slipp.domain.Question;
 import slipp.domain.QuestionRepository;
+import slipp.domain.User;
+import slipp.domain.UserRepository;
 
 @Controller
 public class QuestionController {
 
 	@Autowired
 	QuestionRepository questionRepository;
-
-	@PostMapping("/questions")
-	public ModelAndView create(Question question) {
-
+	@Autowired
+	UserRepository userRepository;
+	
+	@PostMapping("/questions/save/{uid}")
+	public ModelAndView create(@PathVariable("uid") long uid, Question question) {
+//		question.setUserPk(uId);
+		question.setWriter(userRepository.findOne(uid));
 		questionRepository.save(question);
-
 		return new ModelAndView("redirect:/");
 	}
 
-	@GetMapping("/questions/{id}")
-	public ModelAndView show(@PathVariable long id) {
+	@GetMapping("questions/{id}")
+	public ModelAndView show(@PathVariable("id") long id) {
+//		Question question = questionRepository.findOne(id);
+//		User user = userRepository.findOne(question.getUserPk());
 		ModelAndView mav = new ModelAndView("qna/show");
 		mav.addObject("question", questionRepository.findOne(id));
+//		mav.addObject("user", user);
 		return mav;
 	}
-
+	
 	@GetMapping("/questions/{id}/updateForm")
 	public ModelAndView updateForm(@PathVariable long id) {
 		ModelAndView mav = new ModelAndView("qna/updateForm");
@@ -48,7 +55,6 @@ public class QuestionController {
 	
 	@PutMapping("/questions/{id}/delete")
 	public ModelAndView delete(@PathVariable long id) {
-		System.out.println("here is delete");
 		questionRepository.delete(id);
 		return new ModelAndView("redirect:/");
 	}

@@ -14,7 +14,7 @@ public class User {
 	
 	@Column(name="u_id", nullable=false, unique=true, length=25)
 	String userId;
-	@Column(name="pssword", nullable=false, length=25)
+	@Column(name="password", nullable=false, length=25)
 	String password;
 	@Column(name="name", nullable=false, length=25)
 	String name;
@@ -51,6 +51,19 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+	public boolean update(User user) {
+		if(matchPassword(user.password)) {
+			this.name = user.name;
+			this.email = user.email;
+			return true;
+		}
+		return false;
+	}
+	public boolean matchPassword(String password) {
+		return this.password.equals(password);
+	}
+	public boolean matchId(long id) {
+		return this.id.equals(id);
+	}
 	
 }
